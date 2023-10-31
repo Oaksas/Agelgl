@@ -8,3 +8,16 @@ export interface CreateVendorDto {
     email: string;
     password: string;
 }
+
+export interface VendroLoginInputs {
+    email: string;
+    password: string;
+}
+
+export interface VendorPayload {
+    _id: string;
+    email: string;
+    name: string;
+    foodTypes: [string];
+
+}
