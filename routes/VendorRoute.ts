@@ -1,19 +1,18 @@
 import express, { Request, Response } from 'express';
+import { VendorLogin, VendorProfile, VendorUpdateProfile, VendorUpdateService } from '../controllers';
 
 const router = express.Router();
 
 
-router.post('/login', (req: Request, res: Response) => {
+router.post('/vendor/login', VendorLogin)
+router.get('/vendor/profile', VendorProfile)
+router.patch('/vendor/profile', VendorUpdateProfile)
 
-    res.send("Login")
-}
-)
+router.patch('/vendor/service', VendorUpdateService)
 
 
-router.get('/', (req: Request, res: Response) => {
-    res.send("Vendor route")
-}
-)
+
+router.get('/')
 
 
 export { router as VendorRoute }
