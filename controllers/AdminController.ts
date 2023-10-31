@@ -5,6 +5,17 @@ import { Vendor } from '../models/Vendor';
 import { GenerateHash, GenerateHashedPassword } from '../utils/GenerateHashedPassword';
 
 
+export const FindVendor = async (id: string | undefined, email?: string) => {
+    if (id) {
+        return await Vendor.findById(id);
+
+    }
+    else {
+        return await Vendor.findOne({ email });
+    }
+
+}
+
 export const GetVendors = async (req: Request, res: Response, next: NextFunction) => {
 
     const allVendors = await Vendor.find({});
@@ -13,23 +24,35 @@ export const GetVendors = async (req: Request, res: Response, next: NextFunction
             "message": "No vendors found"
         })
     }
-    res.json({
+    res.status(200).json({
         "data": allVendors
     })
 
 }
 
 export const GetVendorById = async (req: Request, res: Response, next: NextFunction) => {
-    const vendorId = req.params.id;
-    const vendor = await Vendor.findById(vendorId);
-    if (!vendor) {
-        return res.status(404).json({
-            "message": "Vendor not found"
+    try {
+        const vendorId = req.params.id;
+        const vendor = await FindVendor(vendorId);
+        if (vendor) {
+            res.status(200).json({
+                "data": vendor
+            })
+        }
+        if (!vendor) {
+            return res.status(404).json({
+                "message": "Vendor not found"
+            })
+        }
+
+
+    } catch (error) {
+
+        return res.status(500).json({
+            "message": "Internal server error"
         })
+
     }
-    res.json({
-        "data": vendor
-    })
 }
 
 export const CreateVendor = async (req: Request, res: Response, next: NextFunction) => {
@@ -45,7 +68,7 @@ export const CreateVendor = async (req: Request, res: Response, next: NextFuncti
         password
     } = <CreateVendorDto>req.body;
 
-    const vendorExist = await Vendor.findOne({ email });
+    const vendorExist = await FindVendor(undefined, email);
     if (vendorExist) {
         return res.status(400).json({
             "message": "Vendor already exist"
