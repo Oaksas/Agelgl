@@ -7,10 +7,29 @@ import { GenerateHash, GenerateHashedPassword } from '../utils/GenerateHashedPas
 
 export const GetVendors = async (req: Request, res: Response, next: NextFunction) => {
 
+    const allVendors = await Vendor.find({});
+    if (allVendors.length === 0) {
+        return res.status(404).json({
+            "message": "No vendors found"
+        })
+    }
+    res.json({
+        "data": allVendors
+    })
+
 }
 
 export const GetVendorById = async (req: Request, res: Response, next: NextFunction) => {
-
+    const vendorId = req.params.id;
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor) {
+        return res.status(404).json({
+            "message": "Vendor not found"
+        })
+    }
+    res.json({
+        "data": vendor
+    })
 }
 
 export const CreateVendor = async (req: Request, res: Response, next: NextFunction) => {
@@ -48,8 +67,6 @@ export const CreateVendor = async (req: Request, res: Response, next: NextFuncti
         password: hashedPassword,
         salt: salt,
     });
-
-
     res.json({
         "data": createdVendor
     })
