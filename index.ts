@@ -13,10 +13,11 @@ app.use(AdminRoute);
 app.use(VendorRoute);
 
 
-mongoose.connect(MONGO_URI, {}).then(() => {
-    console.log("Connected to MongoDB")
+mongoose.connect('mongodb://0.0.0.0:27017/fooddelivery', {
+}).then(() => {
+    console.log("Connected to Database !!!")
 }).catch((err) => {
-    console.log("Error connecting to MongoDB", err)
+    console.log(err)
 })
 
 
