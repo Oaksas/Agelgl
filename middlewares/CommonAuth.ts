@@ -18,4 +18,7 @@ export const Authenticate = async (req: Request, res: Response, next: NextFuncti
             "message": "Unauthorized"
         })
     }
+    else {
+        next();
+    }
 }
