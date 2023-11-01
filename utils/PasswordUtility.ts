@@ -20,19 +20,24 @@ export const ValidatePassword = async (password: string, salt: string, savedPass
 }
 
 export const GenerateSignature = (payload: VendorPayload) => {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: '30m' })
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' })
 
 }
 
 export const ValidateSignature = async (req: Request) => {
     const signature = req.get('Authorization') || ''
+    try {
+        if (signature) {
+            const payload = await jwt.verify(signature.split(' ')[1], JWT_SECRET) as AuthPayload
 
-    if (signature) {
-        const payload = jwt.verify(signature.split(' ')[1], JWT_SECRET) as AuthPayload
-
-        req.user = payload
-        return true
+            req.user = payload
+            return true
+        }
+        return false
+    } catch (error) {
+        console.log(error)
+        return false
     }
-    return false
+
 
 }
