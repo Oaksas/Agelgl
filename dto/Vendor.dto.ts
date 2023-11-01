@@ -7,6 +7,7 @@ export interface CreateVendorDto {
     phone: string;
     email: string;
     password: string;
+    serviceAvailable: boolean;
 }
 
 export interface VendroLoginInputs {
@@ -19,5 +20,13 @@ export interface VendorPayload {
     email: string;
     name: string;
     foodTypes: [string];
+
+}
+
+export interface EditVendorProfile {
+    name: string;
+    address: string;
+    foodTypes: [string];
+    phone: string;
 
 }
