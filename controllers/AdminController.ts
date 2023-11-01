@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateVendorDto } from '../dto';
 import { Vendor } from '../models/Vendor';
-import { GenerateHash, GenerateHashedPassword } from '../utils/GenerateHashedPassword';
+import { GenerateHash, GenerateHashedPassword } from '../utils';
 
 
 export const FindVendor = async (id: string | undefined, email?: string) => {
