@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { EditVendorProfile, VendroLoginInputs } from "../dto";
 import { FindVendor } from "./AdminController";
 import { GenerateSignature, ValidatePassword } from "../utils";
+import { CreateFoodInput } from "../dto/Food.dto";
+import { Food } from "../models";
 
 
 export const VendorLogin = async (req: Request, res: Response, next: NextFunction) => {
@@ -89,6 +91,43 @@ export const VendorUpdateProfile = async (req: Request, res: Response, next: Nex
 
 }
 
+export const VendorUpdateProfilePicture = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+        const user = req.user;
+        if (user) {
+
+            const vendor = await FindVendor(user._id);
+            if (vendor) {
+                const files = req.files as Express.Multer.File[];
+                const images = files.map((file: Express.Multer.File) => file.filename);
+
+                vendor.coverImages.push(...images);
+
+                const result = await vendor.save();
+
+                return res.status(200).json({
+                    "data": result
+                })
+
+            }
+
+            return res.status(404).json({
+                "message": "Vendor not found"
+            })
+        }
+
+
+
+    } catch (error) {
+        res.status(500).json({
+            "message": "Something went wrong"
+        })
+    }
+
+
+}
+
 export const VendorUpdateService = async (req: Request, res: Response, next: NextFunction) => {
 
 
@@ -119,4 +158,111 @@ export const VendorUpdateService = async (req: Request, res: Response, next: Nex
             "message": "Something went wrong"
         })
     }
+}
+
+
+
+export const AddFood = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+        const user = req.user;
+        if (user) {
+
+            const { name, description, category, readyTime, foodType, price } = <CreateFoodInput>req.body;
+            const vendor = await FindVendor(user._id);
+            if (vendor) {
+                const files = req.files as Express.Multer.File[];
+                const images = files.map((file: Express.Multer.File) => file.filename);
+
+                const createdFood = await Food.create({
+                    vendorId: vendor._id,
+                    name,
+                    description,
+                    category,
+                    readyTime,
+                    foodType,
+                    price,
+                    images: images,
+                    rating: 2,
+                })
+                console.log(createdFood)
+                vendor.foods.push(createdFood);
+                const result = await vendor.save();
+
+                return res.status(200).json({
+                    "data": result
+                })
+
+            }
+
+            return res.status(404).json({
+                "message": "Vendor not found"
+            })
+        }
+
+
+
+    } catch (error) {
+        res.status(500).json({
+            "message": "Something went wrong"
+        })
+    }
+
+}
+
+export const GetFoods = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+    try {
+
+        if (user) {
+            const foods = await Food.find({ vendorId: user._id })
+            console.log(foods)
+            if (foods) {
+                return res.status(200).json({
+                    "data": foods
+                })
+
+            }
+        }
+
+
+
+        res.status(400).json({
+            "message": "Food information not found"
+        })
+    } catch (error) {
+
+        res.status(500).json({
+            "message": "Something went wrong"
+        })
+    }
+
+}
+
+export const GetFoodById = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+
+    try {
+        if (user) {
+            const food = await Food.findById(req.params.id);
+            if (food) {
+                return res.status(200).json({
+                    "data": food
+                })
+
+            }
+        }
+        res.status(400).json({
+            "message": "Food information not found"
+        })
+    }
+    catch (error) {
+        res.status(500).json({
+            "message": "Something went wrong"
+        })
+    }
+
+
 }
