@@ -19,7 +19,7 @@ export const ValidatePassword = async (password: string, salt: string, savedPass
     return await GenerateHashedPassword(password, salt) === savedPassword
 }
 
-export const GenerateSignature = (payload: VendorPayload) => {
+export const GenerateSignature = (payload: AuthPayload) => {
     return jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' })
 
 }
