@@ -40,7 +40,6 @@ Authorization: Bearer YOUR_API_KEY
 
 
 
-Certainly, here's the content converted into a Markdown file:
 
 ```markdown
 # API Endpoints
@@ -49,44 +48,57 @@ Agelgl provides several endpoints to perform various operations. Below is a list
 
 ## Customers
 
-- `POST /api/customers` - Register a new customer.
-- `GET /api/customers/{customer_id}` - Get customer details.
-- `PUT /api/customers/{customer_id}` - Update customer information.
-- `DELETE /api/customers/{customer_id}` - Delete a customer account.
+- `POST /customers/sign-up` - Register a new customer.
+- `POST /customers/login` - Register a new customer.
+- `PATCH /customers/verify` - Login customer.
+- `GET /customers/profile` - Get customer details.
+- `GET /customers/otp` - send opt for customer.
+- `PATCH /customers/profile` - Update customer information.
+- `DELETE /customers/{customer_id}` - Delete a customer account.
 
 ## Vendors
 
-- `POST /api/vendors` - Register a new vendor.
-- `GET /api/vendors/{vendor_id}` - Get vendor details.
-- `PUT /api/vendors/{vendor_id}` - Update vendor information.
-- `DELETE /api/vendors/{vendor_id}` - Delete a vendor account.
+- `POST /vandor` - Register a new vendor.
+- `GET /vandor/{vendor_id}` - Get vendor details.
+- `PATCH /vandor/profile` - Update vendor information.
+- `DELETE /vandor/{vendor_id}` - Delete a vendor account.
+- `GET /vandor/profile/{vendor_id}` - Get vendor information.
+- `GET /vandor/service` - Get vendor service status.
+- `PATCH /vandor/coverimage/` - Get vendor information.
+- `DELETE /vandor/{vendor_id}` - Delete a vendor account.
 
 ## Menus
 
-- `GET /api/menus` - Get a list of available menus.
-- `GET /api/menus/{menu_id}` - Get details of a specific menu.
-- `POST /api/menus` - Create a new menu.
-- `PUT /api/menus/{menu_id}` - Update menu information.
-- `DELETE /api/menus/{menu_id}` - Delete a menu.
+- `GET /vandor/foods` - Get a list of available menus.
+- `GET /vandor/food{food_id}` - Get details of a specific food.
+- `POST /vandor/food` - Create a new food menu.
+- `DELETE /vandor/food/{menu_id}` - Delete a menu.
+
+## Shop
+
+- `GET /shop/{id}` - Get a list of available menus.
+- `GET /shop/top-restaurants/{id}` - Get top restaurants based on rating.
+- `GET /shop/food-in-30-min/{id}` -  GET foods which can be served under 30 minutes.
+- `GET /shop/search/{id | name | location}` - Search foods based on the their name, type and other behaviours .
 
 ## Orders
 
-- `GET /api/orders` - Get a list of orders.
-- `GET /api/orders/{order_id}` - Get details of a specific order.
-- `POST /api/orders` - Place a new order.
-- `PUT /api/orders/{order_id}` - Update order status.
-- `DELETE /api/orders/{order_id}` - Cancel an order.
+- `GET /vandor/orders` - Get a list of orders.
+- `GET /orders/{order_id}` - Get details of a specific order.
+- `POST /orders` - Place a new order.
+- `PUT /orders/{order_id}` - Update order status.
+- `DELETE /orders/{order_id}` - Cancel an order.
 
 ## Quick Delivery
 
-- `GET /api/quick-delivery` - Get restaurants offering quick delivery options.
+- `GET /quick-delivery` - Get restaurants offering quick delivery options.
 
 ## Admins
 
-- `POST /api/admins` - Register a new admin.
-- `GET /api/admins/{admin_id}` - Get admin details.
-- `PUT /api/admins/{admin_id}` - Update admin information.
-- `DELETE /api/admins/{admin_id}` - Delete an admin account.
+- `POST /admins/vandor` - Register a new Restaurant Vendor.
+- `GET /admins/vandors` - Get all Restaurant Vendors.
+- `GET /admins/vandors/:ID` - Get a vandor by ID.
+
 
 Please refer to the API documentation for detailed information about request parameters and response structures for each endpoint.
 
@@ -115,16 +127,6 @@ Here are some sample API requests:
 - Place a new order
 - Get a list of available menus
 - Update vendor information
-
-# Contact
-
-If you have any questions, issues, or need assistance with the Agelgl API, please contact our support team at [support@agelgl.com](mailto:support@agelgl.com).
-
-Thank you for using Agelgl! We hope you enjoy the convenience it brings to your food ordering experience.
-```
-
-You can copy and paste this Markdown into a text file, save it with a `.md` extension, and then use it as documentation on GitHub.
-
 
 
 
