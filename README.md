@@ -40,8 +40,6 @@ Authorization: Bearer YOUR_API_KEY
 
 
 
-
-```markdown
 # API Endpoints
 
 Agelgl provides several endpoints to perform various operations. Below is a list of the main API endpoints.
