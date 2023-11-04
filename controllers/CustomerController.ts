@@ -1,9 +1,11 @@
 import { plainToClass } from 'class-transformer';
 import express, { Request, Response } from 'express';
-import { CreateCustomerInputs, CustomerLoginInputs, CustomerUpdateInputs } from '../dto';
+import { CreateCustomerInputs, CustomerLoginInputs, CustomerUpdateInputs, OrderInput } from '../dto';
 import { validate } from 'class-validator';
 import { Customer } from '../models/Customer';
 import { GenerateHash, GenerateHashedPassword, GenerateOtp, GenerateSignature, ValidatePassword, onRequestOtp } from '../utils';
+import { Food } from '../models';
+import { Order } from '../models/Order';
 
 
 export const CustomerSignUp = async (req: Request, res: Response) => {
@@ -41,7 +43,10 @@ export const CustomerSignUp = async (req: Request, res: Response) => {
             salt,
             otp,
             otp_expiry,
-            verified: false
+            verified: false,
+            lat: 0.0,
+            lng: 0.0,
+            orders: []
         })
 
         if (customer) {
@@ -287,6 +292,246 @@ export const CustomerUpdateProfile = async (req: Request, res: Response) => {
         return res.status(500).json({
             "message": "Internal server error"
         })
+
+    }
+}
+
+
+export const CustomerCreateOrder = async (req: Request, res: Response) => {
+    try {
+
+        const customer = req.user
+
+        if (customer) {
+
+            const orderId = `ORDER-${customer._id}-${new Date().getTime()}`
+            const profile = await Customer.findById(customer._id)
+
+
+            if (profile) {
+                const cart = <[OrderInput]>req.body
+
+
+                const cartItems = Array()
+                let total = 0.0
+
+                const foods = await Food.find().where("_id").in(cart.map(item => item._id)).exec()
+
+
+                foods.map(food => {
+
+                    cart.map(({ _id, unit }) => {
+                        if (food._id === _id) {
+                            total += food.price * unit
+                            cartItems.push({ food, unit })
+                        }
+                    })
+
+
+
+                })
+
+                if (cartItems) {
+                    const currentOrder = await Order.create({
+                        orderId,
+                        items: cartItems,
+                        totalAmount: total,
+                        orderDate: new Date(),
+                        paidThrough: "CBE",
+                        paymentResponse: "",
+                        orderStatus: "Waiting"
+                    })
+
+                    if (currentOrder) {
+                        profile.orders.push(currentOrder)
+                        const profileResponse = await profile.save()
+
+                        return res.status(200).json({
+                            "message": "Order created successfully",
+                            "data": profileResponse
+                        })
+                    }
+                }
+            }
+        }
+        return res.status(400).json({
+            "message": "Invalid customer"
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            "message": "Internal server error"
+        })
+
+    }
+}
+
+export const CustomerGetOrders = async (req: Request, res: Response) => {
+
+    try {
+
+        const customer = req.user
+
+        if (customer) {
+
+            const orderId = `ORDER-${customer._id}-${new Date().getTime()}`
+            const profile = await Customer.findById(customer._id)
+
+            if (profile) {
+                const cart = <[OrderInput]>req.body
+
+                const cartItems = Array()
+                let total = 0.0
+
+                const foods = await Food.find().where("_id").in(cart.map(item => item._id)).exec()
+
+
+                foods.map(food => {
+
+                    cart.map(({ _id, unit }) => {
+                        if (food._id === _id) {
+                            total += food.price * unit
+                            cartItems.push({ food, unit })
+                        }
+                    })
+
+
+
+                })
+
+                if (cartItems) {
+                    const currentOrder = await Order.create({
+                        orderId,
+                        items: cartItems,
+                        totalAmount: total,
+                        orderDate: new Date(),
+                        paidThrough: "CBE",
+                        paymentResponse: "",
+                        orderStatus: "Waiting"
+                    })
+
+                    if (currentOrder) {
+                        profile.orders.push(currentOrder)
+                        const profileResponse = await profile.save()
+
+                        return res.status(200).json({
+                            "message": "Order created successfully",
+                            "data": profileResponse
+                        })
+                    }
+                }
+            }
+        }
+        return res.status(400).json({
+            "message": "Invalid customer"
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            "message": "Internal server error"
+        })
+
+    }
+}
+
+export const CustomerGetOrderById = async (req: Request, res: Response) => {
+
+    try {
+        const customer = req.user
+        const { id } = req.params
+
+        if (customer) {
+            const profile = await Customer.findById(customer._id)
+            if (profile) {
+                const order = await Order.findById(id)
+                if (order) {
+                    return res.status(200).json({
+                        "message": "Order fetched successfully",
+                        "data": order
+                    })
+                }
+            }
+
+        }
+        return res.status(400).json({
+            "message": "Invalid customer"
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            "message": "Internal server error"
+        })
+
+    }
+}
+
+export const CustomerAddToCart = async (req: Request, res: Response) => {
+
+    try {
+
+        const customer = req.user
+        if (customer) {
+
+            const profile = await Customer.findById(customer._id)
+            let cartItems = Array()
+            const { _id, unit } = <OrderInput>req.body
+
+            const food = await Food.findById(_id)
+
+            if (food) {
+                if (profile) {
+
+                    cartItems = profile.cart
+                    if (cartItems.length > 0) {
+                        cartItems.map(item => {
+                            if (item.food._id === _id) {
+                                item.unit += unit
+                            } else {
+                                cartItems.push({ food, unit })
+                            }
+                        })
+                    } else {
+                        cartItems.push({ food, unit })
+
+                    }
+                }
+            }
+
+
+
+
+
+            if (profile) {
+
+            }
+
+
+        }
+        return res.status(400).json({
+            "message": "Invalid customer"
+        })
+
+    } catch (error) {
+
+    }
+}
+
+export const GetCustomerCart = async (req: Request, res: Response) => {
+
+    try {
+
+    } catch (error) {
+
+    }
+}
+export const DeleteCustomerCart = async (req: Request, res: Response) => {
+
+    try {
+
+    } catch (error) {
 
     }
 }

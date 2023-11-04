@@ -47,3 +47,9 @@ export class CustomerUpdateInputs {
 
 
 }
+
+export class OrderInput {
+    _id: string;
+    unit: number;
+
+}
