@@ -81,11 +81,18 @@ Agelgl provides several endpoints to perform various operations. Below is a list
 
 ## Orders
 
-- `GET /vandor/orders` - Get a list of orders.
-- `GET /orders/{order_id}` - Get details of a specific order.
-- `POST /orders` - Place a new order.
-- `PUT /orders/{order_id}` - Update order status.
-- `DELETE /orders/{order_id}` - Cancel an order.
+- `GET /customer/orders` - Get a list of orders.
+- `GET /customer/order/{order_id}` - Get details of a specific order.
+- `POST /customer/orders` - Place a new order.
+- `PUT /customer/orders/{order_id}` - Update order status.
+- `DELETE /customer/orders/{order_id}` - Cancel an order.
+
+
+## Cart
+
+- `GET /customer/cart` - Get Customer Cart.
+- `POST /customer/cart` - Create a cart with food items.
+- `DELETE /customer/cart` - Empty customer cart.
 
 ## Quick Delivery
 
