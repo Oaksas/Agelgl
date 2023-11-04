@@ -523,13 +523,48 @@ export const GetCustomerCart = async (req: Request, res: Response) => {
 
     try {
 
+        const customer = req.user
+        if (customer) {
+            const profile = await Customer.findById(customer._id).populate("cart.food")
+            if (profile) {
+                return res.status(200).json({
+                    "message": "Cart fetched successfully",
+                    "data": profile.cart
+                })
+
+            }
+        }
+
+        return res.status(400).json({
+            "message": "Invalid customer"
+        })
+
     } catch (error) {
+
+        return res.status(500).json({
+            "message": "Internal server error"
+        })
 
     }
 }
 export const DeleteCustomerCart = async (req: Request, res: Response) => {
 
     try {
+
+        const customer = req.user
+        const { _id } = <OrderInput>req.body
+        if (customer) {
+            const profile = await Customer.findById(customer._id)
+            if (profile) {
+                profile.cart = [] as any
+                await profile.save()
+                return res.status(200).json({
+                    "message": "Cart deleted successfully",
+                    "data": profile.cart
+                })
+
+            }
+        }
 
     } catch (error) {
 
