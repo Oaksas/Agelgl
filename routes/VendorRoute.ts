@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { AddFood, GetFoodById, GetFoods, VendorLogin, VendorProfile, VendorUpdateProfile, VendorUpdateProfilePicture, VendorUpdateService } from '../controllers';
+import { AddFood, GetCurrentOrders, GetFoodById, GetFoods, GetOrderDetails, ProcessOrder, VendorLogin, VendorProfile, VendorUpdateProfile, VendorUpdateProfilePicture, VendorUpdateService } from '../controllers';
 import { Authenticate } from '../middlewares/CommonAuth';
 import multer from 'multer';
 
@@ -32,7 +32,12 @@ router.get('/food/:id', GetFoodById)
 router.get('/foods', GetFoods)
 
 
+router.get('/orders', GetCurrentOrders)
+router.put('/order/:id/process', ProcessOrder)
+router.get('/order/:id', GetOrderDetails)
+
 router.get('/')
+
 
 
 export { router as VendorRoute }

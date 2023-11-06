@@ -4,6 +4,7 @@ import { FindVendor } from "./AdminController";
 import { GenerateSignature, ValidatePassword } from "../utils";
 import { CreateFoodInput } from "../dto/Food.dto";
 import { Food } from "../models";
+import { Order } from "../models/Order";
 
 
 export const VendorLogin = async (req: Request, res: Response, next: NextFunction) => {
@@ -265,4 +266,88 @@ export const GetFoodById = async (req: Request, res: Response, next: NextFunctio
     }
 
 
+}
+
+
+export const GetCurrentOrders = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+
+    try {
+        if (user) {
+            const order = await Order.findById({ vendorId: user._id }).populate('items.food');
+            if (order) {
+                return res.status(200).json({
+                    "data": order
+                })
+            }
+        }
+        res.status(400).json({
+            "message": "Order information not found"
+        })
+    }
+    catch (error) {
+        res.status(500).json({
+            "message": "Something went wrong"
+        })
+    }
+}
+
+export const GetOrderDetails = async (req: Request, res: Response, next: NextFunction) => {
+
+
+    const orderId = req.params.id;
+
+    try {
+        if (orderId) {
+            const order = await Order.findById(orderId).populate('items.food');
+            if (order) {
+                return res.status(200).json({
+                    "data": order
+                })
+            }
+        }
+        res.status(400).json({
+            "message": "Order information not found"
+        })
+    }
+    catch (error) {
+        res.status(500).json({
+            "message": "Something went wrong"
+        })
+    }
+
+}
+
+export const ProcessOrder = async (req: Request, res: Response, next: NextFunction) => {
+
+    const orderId = req.params.id;
+
+    try {
+        const { status, remark, time } = req.body
+        if (orderId) {
+            const order = await Order.findById(orderId).populate('items.food');
+            if (order) {
+                order.orderStatus = status
+                order.remark = remark
+                order.readyTime = time
+                const orderResult = await order.save();
+
+                return res.status(200).json({
+                    "data": orderResult
+                })
+            }
+
+
+        }
+        return res.status(400).json({
+            "message": "Order information not found"
+        })
+
+    }
+    catch (error) {
+        res.status(500).json({
+            "message": "Something went wrong"
+        })
+    }
 }
